@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 import { Activity } from "./Activity";
 
-@Entity("progress")
+@Entity("progresses")
 export class Progress {
   @PrimaryGeneratedColumn()
   id!: number;

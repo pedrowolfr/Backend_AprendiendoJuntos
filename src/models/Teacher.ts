@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User";
+import { Subject } from "./Subject";
 
 @Entity("teachers")
 export class Teacher {
@@ -27,4 +29,7 @@ export class Teacher {
   @OneToOne(() => User, (user) => user.teacher)
   @JoinColumn({ name: "user_id" })
   user!: User;
+
+  @OneToMany(() => Subject, (subject) => subject.teacher)
+  studentSubjects!: Subject[];
 }

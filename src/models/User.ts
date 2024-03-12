@@ -42,9 +42,9 @@ export class User {
   @OneToOne(() => Teacher, (teachers) => teachers.user)
   teacher?: Teacher;
 
-  @OneToMany(() => Subject, (subjects) => subjects.user)
+  @OneToMany(() => Subject, (subject) => subject.user_id)
   studentSubjects!: Subject[];
 
-  @OneToMany(() => Progress, (progress) => progress.user)
+  @OneToMany(() => Progress, (progress) => progress.user_id)
   progresses!: Progress[];
 }

@@ -43,4 +43,6 @@ export class Subject {
 
   @OneToMany(() => Activity, (activity) => activity.subject)
   activities!: Activity[];
+
+
 }

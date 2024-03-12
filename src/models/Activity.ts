@@ -1,11 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Subject } from "./Subject";
-import { Progress } from "./Progress"; 
+import { Progress } from "./Progress";
 
 @Entity("activities")
 export class Activity {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Column()
+  subject_id!: number;
 
   @Column()
   activity_name!: string;
@@ -19,10 +22,9 @@ export class Activity {
   @Column()
   updated_at!: Date;
 
-  @ManyToOne(() => Subject, (subject) => subject.activities)
-  @JoinColumn({ name: "subject_id", referencedColumnName: "id" })
-  subject!: Subject;
-
-  @OneToMany(() => Progress, (progress) => progress.activity) 
+  @OneToMany(() => Progress, (progress) => progress.activity)
   progresses!: Progress[];
+
+  @ManyToOne(() => Subject, (subject) => subject.activities)
+  subject!: Subject;
 }

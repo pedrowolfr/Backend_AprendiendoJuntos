@@ -14,11 +14,11 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
             generationStrategy: "increment",
           },
           {
-            name: "user_id",
+            name: "teacher_id",
             type: "int",
           },
           {
-            name: "teacher_id",
+            name: "user_id",
             type: "int",
           },
           {
@@ -43,15 +43,15 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
           },
         ],
         foreignKeys: [
-          {
-            columnNames: ["user_id"],
-            referencedTableName: "users",
+                   {
+            columnNames: ["teacher_id"],
+            referencedTableName: "teachers",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
           {
-            columnNames: ["teacher_id"],
-            referencedTableName: "teachers",
+            columnNames: ["user_id"],
+            referencedTableName: "users",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
