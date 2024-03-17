@@ -17,8 +17,8 @@ export class UserController {
     req: Request<{}, {}, CreateUserRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
-    const userRepository = AppDataSource.getRepository(User);
     const { nick_name, name, email, password } = req.body;
+    const userRepository = AppDataSource.getRepository(User);
 
     try {
       const newUser = userRepository.create({
@@ -56,16 +56,14 @@ export class UserController {
         email,
         password: bcrypt.hashSync(password, 10),
         role: UserRoles.Teacher,
-        created_at: new Date(),
-        updated_at: new Date(),
-        studentSubjects: [],
       };
       const newUser = await userRepository.save(dataUser);
 
       const teacherRepository = AppDataSource.getRepository(Teacher);
       const newTeacher = await teacherRepository.save({
         user: newUser,
-        portfolio: "https://",
+        photo,
+        subject,
       });
       res.status(201).json(newTeacher);
     } catch (error: any) {
@@ -83,6 +81,7 @@ export class UserController {
   ): Promise<void | Response<any>> {
     const userRepository = AppDataSource.getRepository(User);
     const { email, password } = req.body;
+    
     try {
       if (!email || !password) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -126,7 +125,7 @@ export class UserController {
       };
 
       const token = jwt.sign(tokenPayload, "123", {
-        expiresIn: "1h",
+        expiresIn: "3h",
       });
 
       res.status(StatusCodes.OK).json({
@@ -196,6 +195,7 @@ export class UserController {
       const teachersWithDetails = allTeachers.map((teacher) => ({
         id: teacher.id,
         name: teacher.user.name,
+        photo: teacher.photo,
       }));
 
       res.status(200).json(teachersWithDetails);
