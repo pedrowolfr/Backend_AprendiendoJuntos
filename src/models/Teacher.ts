@@ -18,9 +18,6 @@ export class Teacher {
   photo?: string;
 
   @Column()
-  subject?: string;
-
-  @Column()
   created_at!: Date;
 
   @Column()

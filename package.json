@@ -5,7 +5,10 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --files src/server.ts"
+    "dev": "nodemon --files src/server.ts",
+    "db:migrate": "npx typeorm-ts-node-commonjs migration:run -d ./src/database/data-source.ts",
+    "db:drop": "npx typeorm-ts-node-commonjs schema:drop -d ./src/database/data-source.ts",
+    "db:reset": "npm run db:drop && npm run db:migrate"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",

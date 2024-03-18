@@ -9,6 +9,7 @@ import {
 import { User } from "./User";
 import { Teacher } from "./Teacher";
 import { Activity } from "./Activity";
+import { Enrollments } from "./Enrollment";
 
 @Entity("subjects")
 export class Subject {
@@ -43,4 +44,7 @@ export class Subject {
 
   @OneToMany(() => Activity, (activity) => activity.subject)
   activities!: Activity[];
+
+  @OneToMany(() => Enrollments, Enrollments => Enrollments.subject)
+  enrollments!: Enrollments[];
 }

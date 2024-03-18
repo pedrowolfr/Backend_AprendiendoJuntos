@@ -8,6 +8,7 @@ export interface CreateUserRequestBody {
 export interface CreateSubjectsRequestBody {
     user_id: number;
     teacher_id: number;
+    activity_id: number;
 }
 
   export interface LoginUserRequestBody {
@@ -26,5 +27,5 @@ export interface CreateSubjectsRequestBody {
     name: string;
     email: string;
     password: string;
-    subject: string;
+    subject_id: string;
   }

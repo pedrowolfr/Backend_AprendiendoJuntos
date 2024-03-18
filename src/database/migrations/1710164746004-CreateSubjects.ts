@@ -22,7 +22,7 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
             type: "int",
           },
           {
-            name: "activity_id",
+            name: "enrollment_id",
             type: "int",
           },
           {
@@ -56,8 +56,8 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
             onDelete: "CASCADE",
           },
           {
-            columnNames: ["activity_id"],
-            referencedTableName: "activities",
+            columnNames: ["enrollment_id"],
+            referencedTableName: "enrollments",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
