@@ -177,11 +177,12 @@ export class UserController {
       const enrollmentRepository = AppDataSource.getRepository(Enrollment);
       const enrollmentData = await enrollmentRepository.find({
         where: { user_id: id }, 
-        relations: ["user", "subject", "user.progress"],
+        relations: ["user", "subject"],
         select: ["id", "user_id", "enrollment_date"], 
       });
 
   const profileData = enrollmentData.map((enrollment) => ({
+    
 id: enrollment.id, 
 enrollment_date: enrollment.enrollment_date, 
 user:{
@@ -189,8 +190,8 @@ user:{
   name: enrollment.user.name,
   nick_name: enrollment.user.nick_name,
 },
-progress: {
-id: enrollment.progress.id,
+subject: {
+subject_name: enrollment.subjects.subject_name,
 
 
 

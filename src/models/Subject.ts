@@ -37,6 +37,7 @@ export class Subject {
   @OneToMany(() => Activity, (activity) => activity.subject)
   activities!: Activity[];
 
-  @OneToMany(() => Enrollment, Enrollment => Enrollment.subject)
-  enrollments!: Enrollment[];
+  @ManyToOne(() => Enrollment, (enrollment) => enrollment.subjects)
+  @JoinColumn({ name: "subject_id" })
+  enrollment!: Enrollment;
 }
