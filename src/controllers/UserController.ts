@@ -146,22 +146,25 @@ export class UserController {
   async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
-
+  
       const userRepository = AppDataSource.getRepository(User);
-      const user = await userRepository.findOneBy({
-        id: id,
+      const user = await userRepository.findOne({
+        where: { id: id }, 
+        relations: ["enrollment", "progresses"],
+        select: ["id", "nick_name", "name"], 
       });
-
+  
       if (!user) {
         return res.status(404).json({
-          message: "Usuario no encontrado",
+          message: "User not found",
         });
       }
-
+  
       res.status(200).json(user);
     } catch (error) {
+      console.error("Error while getting user:", error);
       res.status(500).json({
-        message: "Error al obtener usuario",
+        message: "Error while getting user",
       });
     }
   }
