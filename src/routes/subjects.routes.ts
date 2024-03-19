@@ -9,8 +9,8 @@ import { isSuperAdmin } from "../middleware/isSuperAdmin";
 const router = express.Router();
 const subjectController = new SubjectController();
 
-router.get("/get", auth, isSuperAdmin, subjectController.getAllSubjects);
-router.post("/newSubject", auth, isSuperAdmin, subjectController.create);
+router.get("/get", subjectController.getAllSubjects);
+router.post("/newSubject", subjectController.create);
 router.get("/mysubjects/:id", auth, isTeacher, subjectController.getByTeacher);
 router.patch("/:id", auth, isSuperAdmin, subjectController.updateSubject);
 router.delete("/:id", auth, isSuperAdmin, subjectController.deleteSubject);

@@ -13,13 +13,13 @@ import { Enrollment } from "./Enrollment";
 @Entity("subjects")
 export class Subject {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id?: number;
 
   @Column()
   teacher_id!: number;
 
-  @Column()
-  activity_id!: number;
+  // @Column()
+  // activity_id!: number;
 
   @Column()
   subject_name!: string;
@@ -37,7 +37,7 @@ export class Subject {
   @OneToMany(() => Activity, (activity) => activity.subject)
   activities!: Activity[];
 
-  @ManyToOne(() => Enrollment, (enrollment) => enrollment.subjects)
-  @JoinColumn({ name: "subject_id" })
-  enrollment!: Enrollment;
+  // @ManyToOne(() => Enrollment, (enrollment) => enrollment.subjects)
+  // @JoinColumn({ name: "subject_id" })
+  // enrollment!: Enrollment;
 }

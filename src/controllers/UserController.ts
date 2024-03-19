@@ -170,51 +170,47 @@ export class UserController {
   //   }
   // }
 
-  async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
-    try {
-      const id = +req.params.id;
+//   async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
+//     try {
+//       const id = +req.params.id;
   
-      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-      const enrollmentData = await enrollmentRepository.find({
-        where: { user_id: id }, 
-        relations: ["user", "subject"],
-        select: ["id", "user_id", "enrollment_date"], 
-      });
+//       const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+//       const enrollmentData = await enrollmentRepository.find({
+//         where: { user_id: id }, 
+//         relations: ["user", "subjects"],
+//         select: ["id", "user_id", "enrollment_date"], 
+//       });
 
-  const profileData = enrollmentData.map((enrollment) => ({
+//   const profileData = enrollmentData.map((enrollment) => ({
     
-id: enrollment.id, 
-enrollment_date: enrollment.enrollment_date, 
-user:{
-  id: enrollment.user.id,
-  name: enrollment.user.name,
-  nick_name: enrollment.user.nick_name,
-},
-subject: {
-subject_name: enrollment.subjects.subject_name,
+// id: enrollment.id, 
+// enrollment_date: enrollment.enrollment_date, 
+// user:{
+//   id: enrollment.user.id,
+//   name: enrollment.user.name,
+//   nick_name: enrollment.user.nick_name,
+// },
+// subjects: {
+// subject_id: enrollment.subjects,
+// }
+//   })
 
+//   )
 
-
-
-}
-  })
-
-  )
-
-      // if (!user) {
-      //   return res.status(404).json({
-      //     message: "User not found",
-      //   });
-      // }
+//       // if (!user) {
+//       //   return res.status(404).json({
+//       //     message: "User not found",
+//       //   });
+//       // }
   
-      res.status(200).json(profileData);
-    } catch (error) {
-      console.error("Error while getting user:", error);
-      res.status(500).json({
-        message: "Error while getting user",
-      });
-    }
-  }
+//       res.status(200).json(profileData);
+//     } catch (error) {
+//       console.error("Error while getting user:", error);
+//       res.status(500).json({
+//         message: "Error while getting user",
+//       });
+//     }
+//   }
 
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {

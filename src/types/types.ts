@@ -6,9 +6,8 @@ export interface CreateUserRequestBody {
   }
 
 export interface CreateSubjectsRequestBody {
-    user_id: number;
     teacher_id: number;
-    activity_id: number;
+    subject_name: string;
 }
 
   export interface LoginUserRequestBody {

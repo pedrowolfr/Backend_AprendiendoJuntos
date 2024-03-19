@@ -18,10 +18,6 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
             type: "int",
           },
           {
-            name: "enrollment_id",
-            type: "int",
-          },
-          {
             name: "subject_name",
             type: "varchar",
             length: "100",
@@ -42,12 +38,6 @@ export class CreateSubjects1710164746004 implements MigrationInterface {
                    {
             columnNames: ["teacher_id"],
             referencedTableName: "teachers",
-            referencedColumnNames: ["id"],
-            onDelete: "CASCADE",
-          },
-          {
-            columnNames: ["enrollment_id"],
-            referencedTableName: "enrollments",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },

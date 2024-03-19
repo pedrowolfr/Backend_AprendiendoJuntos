@@ -21,12 +21,10 @@ export class SubjectController {
       }
       const filter: any = {
         select: {
-          user_id: true,
+          subject_name: true,
           teacher_id: true,
-          activity_id: true,
           id: true,
         },
-        relations: ["teacher", "teacher.user", "user", "activity"],
       };
 
       if (page && limit) {
@@ -56,20 +54,25 @@ export class SubjectController {
     res: Response
   ): Promise<void | Response<any>> {
     try {
-      const data = req.body;
+      const { teacher_id, subject_name } = req.body;
       const subjectRepository = AppDataSource.getRepository(Subject);
 
       const teacherRepository = AppDataSource.getRepository(Teacher);
       const teacher = await teacherRepository.findOne({
-        where: { id: data.teacher_id },
+        where: { id: teacher_id },
       });
+
       if (!teacher) {
         return res
           .status(400)
           .json({ message: "El profesor especificado no existe." });
       }
 
-      const newSubject = await subjectRepository.save(data);
+      const newSubject = subjectRepository.create({
+        teacher_id, 
+        subject_name,
+      });
+      await subjectRepository.save(newSubject);
       res.status(201).json({
         message: "Asignatura creada exitosamente",
         Subject: newSubject,
