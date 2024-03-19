@@ -10,7 +10,6 @@ router.post("/register", userController.register);
 router.post("/login", userController.login);
 router.get("/:id", auth, userController.getProfile);
 router.patch("/:id", auth, userController.update);
-router.get("/teachers/list", userController.allTeachers);
 router.post("/teachers/create", userController.createTeacher);
 router.get("/users/getall", auth, isSuperAdmin, userController.getAllUsers);
 router.delete("/delete/:id", auth, isSuperAdmin, userController.deleteUser);

@@ -22,10 +22,10 @@ export interface CreateSubjectsRequestBody {
   }
 
   export interface CreateTeacherRequestBody {
-    user_id: string;
+    user_id: number;
     photo: string;
+    nick_name: string;
     name: string;
     email: string;
     password: string;
-    subject_id: string;
   }

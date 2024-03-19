@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  CreateTeacherRequestBody,
   CreateUserRequestBody,
   LoginUserRequestBody,
   TokenData,
@@ -43,29 +44,29 @@ export class UserController {
   }
 
   async createTeacher(
-    req: Request<{}, {}, CreateUserRequestBody>,
+    req: Request<{}, {}, CreateTeacherRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
     const userRepository = AppDataSource.getRepository(User);
-    const { nick_name, name, email, password } = req.body;
+    const { nick_name, name, email, password, photo } = req.body;
     try {
       
-      const dataUser: User = {
+      const userData = userRepository.create({
         nick_name,
         name,
         email,
         password: bcrypt.hashSync(password, 10),
         role: UserRoles.Teacher,
-      };
-      const newUser = await userRepository.save(dataUser);
+
+      });
+      await userRepository.save(userData);
 
       const teacherRepository = AppDataSource.getRepository(Teacher);
-      const newTeacher = await teacherRepository.save({
-        user: newUser,
+      await teacherRepository.save({
+        user: userData,
         photo,
-        subject,
       });
-      res.status(201).json(newTeacher);
+      res.status(201).json("Profesor creado exitosamente");
     } catch (error: any) {
       console.error("Error al crear Profesor:", error);
       res.status(500).json({
@@ -97,6 +98,8 @@ export class UserController {
           role: true,
         },
         select: {
+          id: true,
+          password: true,
           role: {
             role_name: true,
           },
@@ -177,31 +180,6 @@ export class UserController {
     } catch (error) {
       res.status(500).json({
         message: "Error al actualizar usuario",
-      });
-    }
-  }
-
-  async allTeachers(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const teacherRepository = AppDataSource.getRepository(Teacher);
-
-      const allTeachers = await teacherRepository.find({
-        relations: ["user"],
-      });
-
-      const teachersWithDetails = allTeachers.map((teacher) => ({
-        id: teacher.id,
-        name: teacher.user.name,
-        photo: teacher.photo,
-      }));
-
-      res.status(200).json(teachersWithDetails);
-    } catch (error) {
-      res.status(500).json({
-        message: "Error al obtener teacheras",
       });
     }
   }
