@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "./Role";
 import { Teacher } from "./Teacher";
-import { Enrollments } from "./Enrollment";
+import { Enrollment } from "./Enrollment";
 import { Progress } from "./Progress";
 
 @Entity("users")
@@ -34,8 +34,8 @@ export class User {
   @OneToOne(() => Teacher, (teacher) => teacher.user)
   teacher?: Teacher;
 
-  @OneToOne(() => Enrollments, (enrollments) => enrollments.user)
-  enrollment?: Enrollments;
+  @OneToOne(() => Enrollment, (enrollment) => enrollment.user)
+  enrollment?: Enrollment;
 
   @OneToMany(() => Progress, (progress) => progress.user) 
   progresses!: Progress[];

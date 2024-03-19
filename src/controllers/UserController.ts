@@ -12,6 +12,7 @@ import { UserRoles } from "../constants/UserRoles";
 import { AppDataSource } from "../database/data-source";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
+import { Enrollment } from "../models/Enrollment";
 
 export class UserController {
   async register(
@@ -143,24 +144,69 @@ export class UserController {
     }
   }
 
+  // async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
+  //   try {
+  //     const id = +req.params.id;
+  
+  //     const userRepository = AppDataSource.getRepository(User);
+  //     const user = await userRepository.findOne({
+  //       where: { id: id }, 
+  //       relations: ["enrollment", "progresses"],
+  //       select: ["id", "nick_name", "name"], 
+  //     });
+  
+  //     if (!user) {
+  //       return res.status(404).json({
+  //         message: "User not found",
+  //       });
+  //     }
+  
+  //     res.status(200).json(user);
+  //   } catch (error) {
+  //     console.error("Error while getting user:", error);
+  //     res.status(500).json({
+  //       message: "Error while getting user",
+  //     });
+  //   }
+  // }
+
   async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
   
-      const userRepository = AppDataSource.getRepository(User);
-      const user = await userRepository.findOne({
-        where: { id: id }, 
-        relations: ["enrollment", "progresses"],
-        select: ["id", "nick_name", "name"], 
+      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+      const enrollmentData = await enrollmentRepository.find({
+        where: { user_id: id }, 
+        relations: ["user", "subject", "user.progress"],
+        select: ["id", "user_id", "enrollment_date"], 
       });
+
+  const profileData = enrollmentData.map((enrollment) => ({
+id: enrollment.id, 
+enrollment_date: enrollment.enrollment_date, 
+user:{
+  id: enrollment.user.id,
+  name: enrollment.user.name,
+  nick_name: enrollment.user.nick_name,
+},
+progress: {
+id: enrollment.progress.id,
+
+
+
+
+}
+  })
+
+  )
+
+      // if (!user) {
+      //   return res.status(404).json({
+      //     message: "User not found",
+      //   });
+      // }
   
-      if (!user) {
-        return res.status(404).json({
-          message: "User not found",
-        });
-      }
-  
-      res.status(200).json(user);
+      res.status(200).json(profileData);
     } catch (error) {
       console.error("Error while getting user:", error);
       res.status(500).json({

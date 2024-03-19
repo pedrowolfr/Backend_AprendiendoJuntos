@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Teacher } from "./Teacher";
 import { Activity } from "./Activity";
-import { Enrollments } from "./Enrollment";
+import { Enrollment } from "./Enrollment";
 
 @Entity("subjects")
 export class Subject {
@@ -37,6 +37,6 @@ export class Subject {
   @OneToMany(() => Activity, (activity) => activity.subject)
   activities!: Activity[];
 
-  @OneToMany(() => Enrollments, Enrollments => Enrollments.subject)
-  enrollments!: Enrollments[];
+  @OneToMany(() => Enrollment, Enrollment => Enrollment.subject)
+  enrollments!: Enrollment[];
 }

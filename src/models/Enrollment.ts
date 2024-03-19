@@ -2,8 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 import { User } from "./User";
 import { Subject } from "./Subject";
 
-@Entity("enrollment")
-export class Enrollments {
+@Entity("enrollments")
+export class Enrollment {
   @PrimaryGeneratedColumn()
   id!: number;
 
