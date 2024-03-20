@@ -3,33 +3,30 @@ import { StatusCodes } from "http-status-codes";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { TokenData } from "../types/types";
 
-// -----------------------------------------------------------------------------
-
 export const auth = (req: Request, res: Response, next: NextFunction) => {
   req.headers;
 
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "Requiere autorización",
-    });
+     return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Unauthorized",
+     });
   }
 
   try {
-    const decoded = jwt.verify(token, "123") as JwtPayload;
+     const decoded = jwt.verify(token, "123") as JwtPayload;
+     const decodedPayload: TokenData = {
+        userId: decoded.userId,
+        userRoles: decoded.userRoles, 
+     };
 
-    const decodedPayload: TokenData = {
-      userId: decoded.userId,
-      userRoles: decoded.userRoles,
-    };
+     req.tokenData = decodedPayload;
 
-    req.tokenData = decodedPayload;
-
-    next();
+     next();
   } catch (error) {
-    res.status(StatusCodes.UNAUTHORIZED).json({
-      message: "NO AUTORIZADO",
-    });
+     res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Unauthorized",
+     });
   }
 };

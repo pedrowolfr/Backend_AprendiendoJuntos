@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User";
 import { Subject } from "./Subject";
 
@@ -10,8 +10,8 @@ export class Enrollment {
   @Column()
   user_id!: number;
 
-  // @Column()
-  // subject_id!: number;
+  @Column()
+  subject_id!: number;
 
   @Column()
   enrollment_date!: Date;
@@ -26,6 +26,6 @@ export class Enrollment {
   @JoinColumn({ name: "user_id" })
   user!: User;
 
-  // @OneToMany(() => Subject, subject => subject.enrollment)
-  // subjects!: Subject[];
+  @OneToMany(() => Subject, subject => subject.enrollment)
+  subjects!: Subject[];
 }

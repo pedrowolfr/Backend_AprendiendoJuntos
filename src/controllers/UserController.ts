@@ -212,6 +212,35 @@ export class UserController {
 //     }
 //   }
 
+async getProfile(req: Request, res: Response): Promise<Response<any>> {
+  try {
+    const userId = Number(req.tokenData.userId);
+    const userRepository = AppDataSource.getRepository(User);
+    const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+
+    // Obtener el usuario del perfil
+    const profileUser = await userRepository.findOne({
+      where: { id: userId }, // Establecer la condición de búsqueda
+    });
+
+    if (!profileUser) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    // Obtener las inscripciones del usuario
+    const enrollments = await enrollmentRepository.find({
+      where: { user_id: userId },
+      relations: ["subjects", "subjects.activities", "subjects.activities.progresses"]
+    });
+
+    return res.status(200).json({ profileUser, enrollments });
+  } catch (err) {
+    console.error('Error in the profile controller', err);
+    return res.status(500).json({ status: 'Error', message: 'Internal server error' });
+  }
+}
+
+
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;

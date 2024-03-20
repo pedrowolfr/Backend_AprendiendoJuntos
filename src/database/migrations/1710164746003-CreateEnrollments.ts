@@ -18,6 +18,10 @@ export class CreateEnrollments1710164746003 implements MigrationInterface {
             type: "int",
           },
           {
+            name: "subject_id",
+            type: "int",
+          },
+          {
             name: "enrollment_date",
             type: "date",               
          },
@@ -37,6 +41,12 @@ export class CreateEnrollments1710164746003 implements MigrationInterface {
           {
             columnNames: ["user_id"],
             referencedTableName: "users",
+            referencedColumnNames: ["id"],
+            onDelete: "CASCADE",
+          },
+          {
+            columnNames: ["subject_id"],
+            referencedTableName: "subjects",
             referencedColumnNames: ["id"],
             onDelete: "CASCADE",
           },
