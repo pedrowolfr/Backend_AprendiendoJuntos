@@ -1,6 +1,6 @@
 # <h1 align="center"> 🤓 Backend App - Aprendiendo Juntos ✏️</h1>
 
-<div style="text-align: center;"><img src= "./assets/1993.png" width="500"/></div>
+<div style="text-align: center;"><img src= "./assets/Logo_Learningto_hori.png" width="500"/></div>
 
 <details>
   <summary> Contenido 📝</summary>
