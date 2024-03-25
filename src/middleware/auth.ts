@@ -9,24 +9,24 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-     return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: "Unauthorized",
-     });
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Unauthorized",
+    });
   }
 
   try {
-     const decoded = jwt.verify(token, "123") as JwtPayload;
-     const decodedPayload: TokenData = {
-        userId: decoded.userId,
-        userRoles: decoded.userRoles, 
-     };
+    const decoded = jwt.verify(token, "123") as JwtPayload;
+    const decodedPayload: TokenData = {
+      userId: decoded.userId,
+      userRoles: decoded.userRoles,
+    };
 
-     req.tokenData = decodedPayload;
+    req.tokenData = decodedPayload;
 
-     next();
+    next();
   } catch (error) {
-     res.status(StatusCodes.UNAUTHORIZED).json({
-        message: "Unauthorized",
-     });
+    res.status(StatusCodes.UNAUTHORIZED).json({
+      message: "Unauthorized",
+    });
   }
 };

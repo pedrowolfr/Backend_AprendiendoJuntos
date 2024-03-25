@@ -36,11 +36,9 @@ export class ActivityController {
       });
 
       if (!activities || activities.length === 0) {
-        return res
-          .status(404)
-          .json({
-            message: "No se encontraron actividades para esta asignatura",
-          });
+        return res.status(404).json({
+          message: "No se encontraron actividades para esta asignatura",
+        });
       }
 
       res.status(200).json(activities);
@@ -66,12 +64,10 @@ export class ActivityController {
         content,
       });
       await activityRepository.save(newActivity);
-      res
-        .status(201)
-        .json({
-          message: "Actividad creada correctamente",
-          activity: newActivity,
-        });
+      res.status(201).json({
+        message: "Actividad creada correctamente",
+        activity: newActivity,
+      });
     } catch (error) {
       console.error("Error creating activity:", error);
       res.status(500).json({ message: "Error al crear actividad" });

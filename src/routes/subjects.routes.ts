@@ -12,6 +12,6 @@ router.post("/newSubject", isSuperAdmin, subjectController.create);
 router.get("/mysubjects/:id", isTeacher, subjectController.getByTeacher);
 router.patch("/:id", isSuperAdmin, subjectController.updateSubject);
 router.delete("/:id", isSuperAdmin, subjectController.deleteSubject);
-router.get("/allsubjects", isSuperAdmin, subjectController.getAllSubjects);
+router.get("/allsubjects", subjectController.getAllSubjects);
 
 export default router;

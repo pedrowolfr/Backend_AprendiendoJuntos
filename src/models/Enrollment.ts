@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { User } from "./User";
 import { Subject } from "./Subject";
 
@@ -22,10 +28,11 @@ export class Enrollment {
   @Column()
   updated_at!: Date;
 
-  @OneToOne(() => User, (user) => user.enrollment)
+  @ManyToOne(() => User, (user) => user.enrollment)
   @JoinColumn({ name: "user_id" })
   user!: User;
 
-  @OneToMany(() => Subject, subject => subject.enrollment)
-  subjects!: Subject[];
+  @ManyToOne(() => Subject, (subject) => subject.enrollments)
+  @JoinColumn({ name: "subject_id" })
+  subject!: Subject;
 }

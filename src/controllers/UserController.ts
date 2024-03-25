@@ -12,7 +12,6 @@ import { UserRoles } from "../constants/UserRoles";
 import { AppDataSource } from "../database/data-source";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
-import { Enrollment } from "../models/Enrollment";
 
 export class UserController {
   async register(
@@ -51,14 +50,12 @@ export class UserController {
     const userRepository = AppDataSource.getRepository(User);
     const { nick_name, name, email, password, photo } = req.body;
     try {
-      
       const userData = userRepository.create({
         nick_name,
         name,
         email,
         password: bcrypt.hashSync(password, 10),
         role: UserRoles.Teacher,
-
       });
       await userRepository.save(userData);
 
@@ -83,7 +80,7 @@ export class UserController {
   ): Promise<void | Response<any>> {
     const userRepository = AppDataSource.getRepository(User);
     const { email, password } = req.body;
-    
+
     try {
       if (!email || !password) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -144,102 +141,34 @@ export class UserController {
     }
   }
 
-  // async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
-  //   try {
-  //     const id = +req.params.id;
-  
-  //     const userRepository = AppDataSource.getRepository(User);
-  //     const user = await userRepository.findOne({
-  //       where: { id: id }, 
-  //       relations: ["enrollment", "progresses"],
-  //       select: ["id", "nick_name", "name"], 
-  //     });
-  
-  //     if (!user) {
-  //       return res.status(404).json({
-  //         message: "User not found",
-  //       });
-  //     }
-  
-  //     res.status(200).json(user);
-  //   } catch (error) {
-  //     console.error("Error while getting user:", error);
-  //     res.status(500).json({
-  //       message: "Error while getting user",
-  //     });
-  //   }
-  // }
+  async getProfile(req: Request, res: Response): Promise<Response<any>> {
+    try {
+      const userId = Number(req.tokenData.userId);
+      const userRepository = AppDataSource.getRepository(User);
 
-//   async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
-//     try {
-//       const id = +req.params.id;
-  
-//       const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-//       const enrollmentData = await enrollmentRepository.find({
-//         where: { user_id: id }, 
-//         relations: ["user", "subjects"],
-//         select: ["id", "user_id", "enrollment_date"], 
-//       });
+      // Obtener el usuario del perfil con sus inscripciones, asignaturas, actividades y progreso
+      const profileUser = await userRepository.find({
+        where: { id: userId },
+        relations: [
+          "enrollment",
+          "enrollment.subject",
+          "enrollment.subject.activities",
+          "enrollment.subject.activities.progresses",
+        ],
+      });
 
-//   const profileData = enrollmentData.map((enrollment) => ({
-    
-// id: enrollment.id, 
-// enrollment_date: enrollment.enrollment_date, 
-// user:{
-//   id: enrollment.user.id,
-//   name: enrollment.user.name,
-//   nick_name: enrollment.user.nick_name,
-// },
-// subjects: {
-// subject_id: enrollment.subjects,
-// }
-//   })
+      if (!profileUser || profileUser.length === 0) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
 
-//   )
-
-//       // if (!user) {
-//       //   return res.status(404).json({
-//       //     message: "User not found",
-//       //   });
-//       // }
-  
-//       res.status(200).json(profileData);
-//     } catch (error) {
-//       console.error("Error while getting user:", error);
-//       res.status(500).json({
-//         message: "Error while getting user",
-//       });
-//     }
-//   }
-
-async getProfile(req: Request, res: Response): Promise<Response<any>> {
-  try {
-    const userId = Number(req.tokenData.userId);
-    const userRepository = AppDataSource.getRepository(User);
-    const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-
-    // Obtener el usuario del perfil
-    const profileUser = await userRepository.findOne({
-      where: { id: userId }, // Establecer la condición de búsqueda
-    });
-
-    if (!profileUser) {
-      return res.status(404).json({ message: 'Profile not found' });
+      return res.status(200).json({ profileUser: profileUser[0] });
+    } catch (err) {
+      console.error("Error in the profile controller", err);
+      return res
+        .status(500)
+        .json({ status: "Error", message: "Internal server error" });
     }
-
-    // Obtener las inscripciones del usuario
-    const enrollments = await enrollmentRepository.find({
-      where: { user_id: userId },
-      relations: ["subjects", "subjects.activities", "subjects.activities.progresses"]
-    });
-
-    return res.status(200).json({ profileUser, enrollments });
-  } catch (err) {
-    console.error('Error in the profile controller', err);
-    return res.status(500).json({ status: 'Error', message: 'Internal server error' });
   }
-}
-
 
   async update(req: Request, res: Response): Promise<void | Response<any>> {
     try {
