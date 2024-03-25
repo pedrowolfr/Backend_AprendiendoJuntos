@@ -3,7 +3,6 @@ import { Subject } from "../models/Subject";
 import { AppDataSource } from "../database/data-source";
 import { Teacher } from "../models/Teacher";
 import { CreateSubjectsRequestBody } from "../types/types";
-import { Activity } from "../models/Activity";
 
 export class SubjectController {
   async getAllSubjects(
@@ -69,7 +68,7 @@ export class SubjectController {
       }
 
       const newSubject = subjectRepository.create({
-        teacher_id, 
+        teacher_id,
         subject_name,
       });
       await subjectRepository.save(newSubject);
@@ -112,7 +111,7 @@ export class SubjectController {
       });
       res.status(200).json(subjects);
     } catch (error) {
-      console.error("Error fetching subjects by teacher:", error);
+      console.error("Error al buscar asignaturas del profesor:", error);
       res
         .status(500)
         .json({ message: "Error al obtener asignaturas del profesor" });
@@ -155,25 +154,6 @@ export class SubjectController {
     } catch (error) {
       res.status(500).json({
         message: "Error al eliminar la Asignatura",
-      });
-    }
-  }
-
-  async getAllActivities(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const activityRepository = AppDataSource.getRepository(Activity);
-
-      const allActivities = await activityRepository.find({
-        select: ["id", "activity_name"],
-      });
-
-      res.status(200).json(allActivities);
-    } catch (error) {
-      res.status(500).json({
-        message: "Error while getting activities",
       });
     }
   }
