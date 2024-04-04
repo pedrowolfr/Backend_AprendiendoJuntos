@@ -5,7 +5,7 @@ import { Teacher } from "../models/Teacher";
 import { CreateSubjectsRequestBody } from "../types/types";
 
 export class SubjectController {
-  async getAllSubjects(
+  async AllSubjects(
     req: Request,
     res: Response
   ): Promise<void | Response<any>> {
