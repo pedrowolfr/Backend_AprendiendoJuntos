@@ -240,10 +240,38 @@ export class UserController {
       });
     } catch (error) {
       res.status(500).json({
-        message: "Error al conseguir asignaturas",
+        message: "Error al conseguir usuarios",
       });
     }
   }
+
+  
+  // async getAllStudents(
+  //   req: Request,
+  //   res: Response
+  // ): Promise<void | Response<any>> {
+  //   try {
+  //     const user = req.user as any; // Accede a la información del usuario adjunta a la solicitud
+  //     if (!user || (user.role !== 'teacher' && user.role !== 'superadmin')) {
+  //       return res.status(403).json({ message: "No tienes permiso para acceder a esta ruta." });
+  //     }
+  
+  //     const students = await User.findAll({
+  //       where: {
+  //         role_id: 2,
+  //       },
+  //       attributes: ['id', 'nick_name', 'name', 'email'],
+  //     });
+  
+  //     res.status(200).json(students);
+  //   } catch (error) {
+  //     console.error("Error al obtener estudiantes:", error);
+  //     res.status(500).json({ message: "Error al obtener estudiantes." });
+  //   }
+  // };
+  
+  
+  
 
   async deleteUser(req: Request, res: Response): Promise<void | Response<any>> {
     try {
