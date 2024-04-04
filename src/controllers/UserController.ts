@@ -141,32 +141,54 @@ export class UserController {
     }
   }
 
-  async getProfile(req: Request, res: Response): Promise<Response<any>> {
-    try {
-      const userId = Number(req.tokenData.userId);
-      const userRepository = AppDataSource.getRepository(User);
+  // async getProfile(req: Request, res: Response): Promise<Response<any>> {
+  //   try {
+  //     const userId = Number(req.tokenData.userId);
+  //     const userRepository = AppDataSource.getRepository(User);
 
-      // Obtener el usuario del perfil con sus inscripciones, asignaturas, actividades y progreso
-      const profileUser = await userRepository.find({
-        where: { id: userId },
-        relations: [
-          "enrollment",
-          "enrollment.subject",
-          "enrollment.subject.activities",
-          "enrollment.subject.activities.progresses",
-        ],
+  //     // Obtener el usuario del perfil con sus inscripciones, asignaturas, actividades y progreso
+  //     const profileUser = await userRepository.find({
+  //       where: { id: userId },
+  //       relations: [
+  //         "enrollment",
+  //         "enrollment.subject",
+  //         "enrollment.subject.activities",
+  //         "enrollment.subject.activities.progresses",
+  //       ],
+  //     });
+
+  //     if (!profileUser || profileUser.length === 0) {
+  //       return res.status(404).json({ message: "Profile not found" });
+  //     }
+
+  //     return res.status(200).json({ profileUser: profileUser[0] });
+  //   } catch (err) {
+  //     console.error("Error in the profile controller", err);
+  //     return res
+  //       .status(500)
+  //       .json({ status: "Error", message: "Internal server error" });
+  //   }
+  // }
+  async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
+    try {
+      const id = +req.params.id;
+
+      const userRepository = AppDataSource.getRepository(User);
+      const user = await userRepository.findOneBy({
+        id: id,
       });
 
-      if (!profileUser || profileUser.length === 0) {
-        return res.status(404).json({ message: "Profile not found" });
+      if (!user) {
+        return res.status(404).json({
+          message: "Usuario no encontrado",
+        });
       }
 
-      return res.status(200).json({ profileUser: profileUser[0] });
-    } catch (err) {
-      console.error("Error in the profile controller", err);
-      return res
-        .status(500)
-        .json({ status: "Error", message: "Internal server error" });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({
+        message: "Error al obtener usuario",
+      });
     }
   }
 
