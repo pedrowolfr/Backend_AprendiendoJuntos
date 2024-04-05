@@ -10,9 +10,10 @@ const router = express.Router();
 const subjectController = new SubjectController();
 
 router.post("/newSubject", isSuperAdmin, subjectController.create);
-router.get("/mysubjects/:id", isTeacher, subjectController.getByTeacher);
+// router.get("/mysubjects/:id", isTeacher, subjectController.getByTeacher);
 router.patch("/:id", isSuperAdmin, subjectController.updateSubject);
 router.delete("/:id", auth, subjectController.deleteSubject);
+router.get("/mysubjects/:id", subjectController.getById);
 router.get("/list", subjectController.getAll);
 
 

@@ -3,12 +3,10 @@ import { Subject } from "../models/Subject";
 import { AppDataSource } from "../database/data-source";
 import { Teacher } from "../models/Teacher";
 import { CreateSubjectsRequestBody } from "../types/types";
+import { Enrollment } from "../models/Enrollment";
 
 export class SubjectController {
-  async getAll(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
+  async getAll(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const subjectRepository = AppDataSource.getRepository(Subject);
 
@@ -82,6 +80,34 @@ export class SubjectController {
         message: "Error al crear la asignatura",
         error: error.message,
       });
+    }
+  }
+
+  async getById(req: Request, res: Response): Promise<void | Response<any>> {
+    try {
+      const enrollmentId = +req.params.id;
+      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+      const enrollment = await enrollmentRepository.findOne({
+        where: { id: enrollmentId },
+        relations: ["user", "subject"],
+        select: ["id", "user", "subject", "enrollment_date"],
+      });
+
+      if (!enrollment) {
+        return res.status(404).json({ message: "Enrollment no encontrado" });
+      }
+
+      const enrollmentDetails = {
+        enrollment_id: enrollment.id,
+        user_id: enrollment.user.id,
+        subject_id: enrollment.subject.id,
+        enrollment_date: enrollment.enrollment_date,
+      };
+
+      res.status(200).json(enrollmentDetails);
+    } catch (error) {
+      console.error("Error al obtener el enrollment:", error);
+      res.status(500).json({ message: "Error al obtener el enrollment" });
     }
   }
 
