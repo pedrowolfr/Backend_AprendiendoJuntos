@@ -12,6 +12,17 @@ export class EnrollmentController {
     try {
       const data = req.body;
       const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+      const existingEnrollment = await enrollmentRepository.findOne({
+        where: { user_id: data.user_id, subject_id: data.subject_id },
+      });
+
+      if (existingEnrollment) {
+        return res
+          .status(400)
+          .json({
+            message: "El usuario ya está matriculado en esta asignatura.",
+          });
+      }
 
       const subjectRepository = AppDataSource.getRepository(Subject);
       const subject = await subjectRepository.findOne({
@@ -25,13 +36,13 @@ export class EnrollmentController {
 
       const newEnrollment = await enrollmentRepository.save(data);
       res.status(201).json({
-        message: "Matricula exitosa",
+        message: "Matrícula exitosa",
         enrollment: newEnrollment,
       });
     } catch (error: any) {
-      console.error("Error al crear matricula:", error);
+      console.error("Error al crear matrícula:", error);
       res.status(500).json({
-        message: "Error al crear matricula",
+        message: "Error al crear matrícula",
         error: error.message,
       });
     }

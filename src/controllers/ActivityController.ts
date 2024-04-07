@@ -3,7 +3,6 @@ import { Activity } from "../models/Activity";
 import { AppDataSource } from "../database/data-source";
 import { CreateActivitiesRequestBody } from "../types/types";
 import { Enrollment } from "../models/Enrollment";
-import { In } from "typeorm";
 
 export class ActivityController {
   async getMyActivities(
@@ -31,6 +30,7 @@ export class ActivityController {
           activities: activities.map((activity) => ({
             id: activity.id || null,
             activity_name: activity.activity_name || null,
+            content: activity.content || null,
           })),
         };
       });
