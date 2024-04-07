@@ -141,34 +141,6 @@ export class UserController {
     }
   }
 
-  // async getProfile(req: Request, res: Response): Promise<Response<any>> {
-  //   try {
-  //     const userId = Number(req.tokenData.userId);
-  //     const userRepository = AppDataSource.getRepository(User);
-
-  //     // Obtener el usuario del perfil con sus inscripciones, asignaturas, actividades y progreso
-  //     const profileUser = await userRepository.find({
-  //       where: { id: userId },
-  //       relations: [
-  //         "enrollment",
-  //         "enrollment.subject",
-  //         "enrollment.subject.activities",
-  //         "enrollment.subject.activities.progresses",
-  //       ],
-  //     });
-
-  //     if (!profileUser || profileUser.length === 0) {
-  //       return res.status(404).json({ message: "Profile not found" });
-  //     }
-
-  //     return res.status(200).json({ profileUser: profileUser[0] });
-  //   } catch (err) {
-  //     console.error("Error in the profile controller", err);
-  //     return res
-  //       .status(500)
-  //       .json({ status: "Error", message: "Internal server error" });
-  //   }
-  // }
   async getProfile(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
@@ -246,30 +218,45 @@ export class UserController {
   }
 
   
-  // async getAllStudents(
-  //   req: Request,
-  //   res: Response
-  // ): Promise<void | Response<any>> {
-  //   try {
-  //     const user = req.user as any; // Accede a la información del usuario adjunta a la solicitud
-  //     if (!user || (user.role !== 'teacher' && user.role !== 'superadmin')) {
-  //       return res.status(403).json({ message: "No tienes permiso para acceder a esta ruta." });
-  //     }
+  async getAllStudents(req: Request, res: Response): Promise<void | Response<any>> {
+    try {
+      const UserRepository = AppDataSource.getRepository(User);
   
-  //     const students = await User.findAll({
-  //       where: {
-  //         role_id: 2,
-  //       },
-  //       attributes: ['id', 'nick_name', 'name', 'email'],
-  //     });
+      let { page, skip } = req.query;
   
-  //     res.status(200).json(students);
-  //   } catch (error) {
-  //     console.error("Error al obtener estudiantes:", error);
-  //     res.status(500).json({ message: "Error al obtener estudiantes." });
-  //   }
-  // };
+      let currentPage = page ? +page : 1;
+      let itemsPerPage = skip ? +skip : 10;
   
+      // Filtrar usuarios con role igual a "student"
+      const [allUsers, count] = await UserRepository.findAndCount({
+        where: {
+          role: {
+            role_name: "student"
+          }
+        },
+        skip: (currentPage - 1) * itemsPerPage,
+        take: itemsPerPage,
+        select: {
+          id: true,
+          nick_name: true,
+          name: true,
+          email: true,
+        },
+        relations: ['role'] // Para incluir la relación con el rol
+      });
+  
+      res.status(200).json({
+        count,
+        skip: itemsPerPage,
+        page: currentPage,
+        results: allUsers,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error al conseguir usuarios",
+      });
+    }
+  }
   
   
 
