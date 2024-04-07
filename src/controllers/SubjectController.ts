@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { Subject } from "../models/Subject";
 import { AppDataSource } from "../database/data-source";
-import { CreateEnrollmentsRequestBody } from "../types/types";
-import { Enrollment } from "../models/Enrollment";
 
 export class SubjectController {
   async getAll(req: Request, res: Response): Promise<void | Response<any>> {
@@ -42,64 +40,6 @@ export class SubjectController {
       res.status(500).json({
         message: "Error al obtener asignaturas",
       });
-    }
-  }
-
-  async create(
-    req: Request<{}, {}, CreateEnrollmentsRequestBody>,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const data = req.body;
-      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-
-      const subjectRepository = AppDataSource.getRepository(Subject);
-      const subject = await subjectRepository.findOne({
-        where: { id: data.subject_id },
-      });
-      if (!subject) {
-        return res.status(400).json({ message: "La asignatura especificada no existe." });
-      }
-
-      const newEnrollment = await enrollmentRepository.save(data);
-      res.status(201).json({
-        message: "Matricula exitosa",
-        enrollment: newEnrollment,
-      });
-    } catch (error: any) {
-      console.error("Error al crear matricula:", error);
-      res.status(500).json({
-        message: "Error al crear matricula",
-        error: error.message,
-      });
-    }
-  }
-
-  async getById(req: Request, res: Response): Promise<void | Response<any>> {
-    try {
-      const enrollmentId = +req.params.id;
-      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-      const enrollment = await enrollmentRepository.findOne({
-        where: { id: enrollmentId },
-        relations: ["user", "subject"],
-        select: ["id", "user", "subject", "enrollment_date"],
-      });
-
-      if (!enrollment) {
-        return res.status(404).json({ message: "Enrollment no encontrado" });
-      }
-
-      const enrollmentDetails = {
-        enrollment_id: enrollment.id,
-        user_id: enrollment.user.id,
-        subject_id: enrollment.subject.id,
-        enrollment_date: enrollment.enrollment_date,
-      };
-
-      res.status(200).json(enrollmentDetails);
-    } catch (error) {
-      console.error("Error al obtener el enrollment:", error);
-      res.status(500).json({ message: "Error al obtener el enrollment" });
     }
   }
 
