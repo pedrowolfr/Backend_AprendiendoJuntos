@@ -44,8 +44,9 @@ export class EnrollmentController {
 
       const enrollments = await enrollmentRepository.find({
         where: { user_id: userId },
-        select: ["subject_id", "enrollment_date"],
-      });
+        relations: ["subject", "subject.teacher"],
+      select: ["id", "subject", "enrollment_date"], 
+    });
 
       res.status(200).json(enrollments);
     } catch (error) {
