@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { Subject } from "../models/Subject";
 import { AppDataSource } from "../database/data-source";
-import { Teacher } from "../models/Teacher";
-import { CreateSubjectsRequestBody } from "../types/types";
+import { CreateEnrollmentsRequestBody } from "../types/types";
 import { Enrollment } from "../models/Enrollment";
 
 export class SubjectController {
@@ -47,37 +46,30 @@ export class SubjectController {
   }
 
   async create(
-    req: Request<{}, {}, CreateSubjectsRequestBody>,
+    req: Request<{}, {}, CreateEnrollmentsRequestBody>,
     res: Response
   ): Promise<void | Response<any>> {
     try {
-      const { teacher_id, subject_name } = req.body;
+      const data = req.body;
+      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+
       const subjectRepository = AppDataSource.getRepository(Subject);
-
-      const teacherRepository = AppDataSource.getRepository(Teacher);
-      const teacher = await teacherRepository.findOne({
-        where: { id: teacher_id },
+      const subject = await subjectRepository.findOne({
+        where: { id: data.subject_id },
       });
-
-      if (!teacher) {
-        return res
-          .status(400)
-          .json({ message: "El profesor especificado no existe." });
+      if (!subject) {
+        return res.status(400).json({ message: "La asignatura especificada no existe." });
       }
 
-      const newSubject = subjectRepository.create({
-        teacher_id,
-        subject_name,
-      });
-      await subjectRepository.save(newSubject);
+      const newEnrollment = await enrollmentRepository.save(data);
       res.status(201).json({
-        message: "Asignatura creada exitosamente",
-        Subject: newSubject,
+        message: "Matricula exitosa",
+        enrollment: newEnrollment,
       });
     } catch (error: any) {
-      console.error("Error al crear la asignatura:", error);
+      console.error("Error al crear matricula:", error);
       res.status(500).json({
-        message: "Error al crear la asignatura",
+        message: "Error al crear matricula",
         error: error.message,
       });
     }
