@@ -6,10 +6,9 @@ import { isTeacher } from "../middleware/isTeacher";
 const router = express.Router();
 const activityController = new ActivityController();
 
-router.get("/allactivities", activityController.getAllActivities);
+router.get("/myActivities/:id", activityController.getMyActivities);
 router.get("/bySubject/:id", isTeacher, activityController.getBySubject); 
 router.post("/activities/create", isSuperAdmin, activityController.createActivity);
-router.patch("/:id", isSuperAdmin, activityController.updateActivity); 
-router.delete("/:id", isSuperAdmin, activityController.deleteActivity);
+
 
 export default router;

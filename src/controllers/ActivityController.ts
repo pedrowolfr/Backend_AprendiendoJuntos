@@ -2,23 +2,44 @@ import { Request, Response } from "express";
 import { Activity } from "../models/Activity";
 import { AppDataSource } from "../database/data-source";
 import { CreateActivitiesRequestBody } from "../types/types";
+import { Enrollment } from "../models/Enrollment";
+import { In } from "typeorm";
 
 export class ActivityController {
-  async getAllActivities(
+  async getMyActivities(
     req: Request,
     res: Response
   ): Promise<void | Response<any>> {
     try {
-      const activityRepository = AppDataSource.getRepository(Activity);
-
-      const allActivities = await activityRepository.find({
-        select: ["id", "activity_name"],
+      const userId = +req.params.id;
+      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+      const myEnrollments = await enrollmentRepository.find({
+        where: { user_id: userId },
+        relations: ["subject", "subject.activities"],
+        select: ["subject_id"],
       });
 
-      res.status(200).json(allActivities);
+      const enrollmentsWithDetails = myEnrollments.map((enrollment) => {
+        const subject = enrollment.subject || {};
+        const activities = subject.activities || [];
+
+        return {
+          subject: {
+            id: subject.id || null,
+            name: subject.subject_name || null,
+          },
+          activities: activities.map((activity) => ({
+            id: activity.id || null,
+            activity_name: activity.activity_name || null,
+          })),
+        };
+      });
+
+      res.status(200).json(enrollmentsWithDetails);
     } catch (error) {
+      console.error("Error while getting enrollments:", error);
       res.status(500).json({
-        message: "Error al obtener actividades",
+        message: "Error while getting enrollments",
       });
     }
   }
@@ -71,46 +92,6 @@ export class ActivityController {
     } catch (error) {
       console.error("Error creating activity:", error);
       res.status(500).json({ message: "Error al crear actividad" });
-    }
-  }
-
-  async updateActivity(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const id = +req.params.id;
-      const data = req.body;
-
-      const activityRepository = AppDataSource.getRepository(Activity);
-      await activityRepository.update({ id: id }, data);
-
-      res.status(202).json({
-        message: "Actividad actualizada exitosamente",
-      });
-    } catch (error) {
-      res.status(500).json({
-        message: "Actividad actualizada exitosamente",
-      });
-    }
-  }
-
-  async deleteActivity(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const id = +req.params.id;
-      const activityRepository = AppDataSource.getRepository(Activity);
-      await activityRepository.delete(id);
-
-      res.status(200).json({
-        message: "Actividad eliminada exitosamente",
-      });
-    } catch (error) {
-      res.status(500).json({
-        message: "Error al eliminar la Actividad",
-      });
     }
   }
 }
