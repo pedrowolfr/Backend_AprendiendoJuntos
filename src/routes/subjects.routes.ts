@@ -6,7 +6,6 @@ const router = express.Router();
 const subjectController = new SubjectController();
 
 router.get("/list", subjectController.getAll);
-// router.get("/mysubjects/:id", isTeacher, subjectController.getByTeacher);
 router.patch("/:id", subjectController.updateSubject);
 router.delete("/:id", auth, subjectController.deleteSubject);
 

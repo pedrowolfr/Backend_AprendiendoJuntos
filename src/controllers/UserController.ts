@@ -12,6 +12,7 @@ import { UserRoles } from "../constants/UserRoles";
 import { AppDataSource } from "../database/data-source";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
+import { Enrollment } from "../models/Enrollment";
 
 export class UserController {
   async register(
@@ -217,49 +218,44 @@ export class UserController {
     }
   }
 
-  async getAllStudents(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
+  async getAllStudents(req: Request, res: Response): Promise<void | Response<any>> {
     try {
-      const UserRepository = AppDataSource.getRepository(User);
-
-      let { page, skip } = req.query;
-
-      let currentPage = page ? +page : 1;
-      let itemsPerPage = skip ? +skip : 10;
-
-      // Filtrar usuarios con role igual a "student"
-      const [allUsers, count] = await UserRepository.findAndCount({
-        where: {
-          role: {
-            role_name: "student",
-          },
-        },
+      const { page, skip } = req.query;
+      const currentPage = page ? +page : 1;
+      const itemsPerPage = skip ? +skip : 10;
+  
+      const enrollmentRepository = AppDataSource.getRepository(Enrollment);
+  
+      const teacherId = Number(req.tokenData?.userId); 
+      if (teacherId === undefined) {
+        return res.status(401).json({ message: 'Token de autenticación no válido' });
+      }
+  
+      const enrollments = await enrollmentRepository.find({
+        relations: ['user', 'subject'],
+        where: { subject: { teacher_id: teacherId } },
         skip: (currentPage - 1) * itemsPerPage,
         take: itemsPerPage,
-        select: {
-          id: true,
-          nick_name: true,
-          name: true,
-          email: true,
-        },
-        relations: ["role"], // Para incluir la relación con el rol
       });
-
+  
+      const students = enrollments.map(enrollment => ({
+        id: enrollment.user.id,
+        name: enrollment.user.name,
+        subject_name: enrollment.subject.subject_name,
+      }));
+  
       res.status(200).json({
-        count,
+        count: students.length,
         skip: itemsPerPage,
         page: currentPage,
-        results: allUsers,
+        results: students,
       });
     } catch (error) {
-      res.status(500).json({
-        message: "Error al conseguir usuarios",
-      });
+      console.error("Error al obtener estudiantes matriculados:", error);
+      res.status(500).json({ message: "Error al obtener estudiantes matriculados" });
     }
   }
-
+  
   async deleteUser(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;

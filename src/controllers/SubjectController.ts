@@ -43,39 +43,6 @@ export class SubjectController {
     }
   }
 
-  async getByTeacher(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const subjectId = +req.params.id;
-      const subjectRepository = AppDataSource.getRepository(Subject);
-
-      const subject = await subjectRepository
-        .createQueryBuilder("subject")
-        .leftJoinAndSelect("subject.teacher", "teacher")
-        .where("subject.id = :subjectId", { subjectId })
-        .getOne();
-
-      if (!subject || !subject.teacher) {
-        return res
-          .status(404)
-          .json({ message: "Asignatura o profesor asociado no encontrado" });
-      }
-
-      const teacherId = subject.teacher.id;
-      const subjects = await subjectRepository.find({
-        where: { teacher_id: teacherId },
-      });
-      res.status(200).json(subjects);
-    } catch (error) {
-      console.error("Error al buscar asignaturas del profesor:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener asignaturas del profesor" });
-    }
-  }
-
   async updateSubject(
     req: Request,
     res: Response
