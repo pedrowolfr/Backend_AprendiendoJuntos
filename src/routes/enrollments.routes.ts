@@ -6,6 +6,6 @@ const router = express.Router();
 const enrollmentController = new EnrollmentController();
 
 router.post("/newEnrollment/create", auth, enrollmentController.create);
-router.get("/myEnrollments/:id",  auth, enrollmentController.getById);
+router.get("/myEnrollments/:id", auth, enrollmentController.getById);
 
 export default router;

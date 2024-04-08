@@ -25,9 +25,9 @@ El objetivo principal del proyecto es desarrollar un backend robusto y eficiente
 ## Características Principales
 1. **Gestión de Usuarios:** Los usuarios podrán registrarse, iniciar sesión y gestionar su perfil. Habrá diferentes roles de usuario, como estudiantes, maestros y administradores, cada uno con sus respectivos permisos y funcionalidades.
 
-2. **Gestión de Asignaturas:** Los maestros podrán crear, editar y eliminar asignaturas. Cada asignatura contendrá información relevante como el nombre, descripción y recursos asociados.
+2. **Gestión de Asignaturas:** Los estudiantes podrán matricularse en asignaturas. Cada asignatura contendrá información relevante como el nombre, descripción y recursos asociados.
 
-3. **Gestión de Actividades:** Los maestros podrán agregar actividades educativas a las asignaturas, como tareas, exámenes o proyectos. Estas actividades estarán disponibles para que los estudiantes las completen y puedan recibir retroalimentación.
+3. **Gestión de Actividades:** Los estudiantes podrán ver las actividades disponibles. Estas actividades estarán disponibles para que los estudiantes las completen y puedan recibir retroalimentación.
 
 4. **Administración del Sistema:** Los administradores tendrán acceso a herramientas de administración avanzadas para gestionar usuarios, asignaturas y actividades. Podrán asignar roles, monitorear el progreso del aprendizaje y generar informes.
 
@@ -130,9 +130,9 @@ Se podrá acceder a la aplicación a través de http://localhost:5173/ para el f
         }
     ```
 
-    - GET ALL TEACHERS
+    - GET ALL SUBJECTS
 
-          GET http://localhost:3000/api/teachers/list
+          GET http://localhost:3000/api/subjects/list
 
     - GET ALL USERS
 

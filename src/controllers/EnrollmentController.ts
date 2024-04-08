@@ -17,11 +17,9 @@ export class EnrollmentController {
       });
 
       if (existingEnrollment) {
-        return res
-          .status(400)
-          .json({
-            message: "El usuario ya está matriculado en esta asignatura.",
-          });
+        return res.status(400).json({
+          message: "El usuario ya está matriculado en esta asignatura.",
+        });
       }
 
       const subjectRepository = AppDataSource.getRepository(Subject);

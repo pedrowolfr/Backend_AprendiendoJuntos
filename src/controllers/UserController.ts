@@ -217,22 +217,24 @@ export class UserController {
     }
   }
 
-  
-  async getAllStudents(req: Request, res: Response): Promise<void | Response<any>> {
+  async getAllStudents(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
     try {
       const UserRepository = AppDataSource.getRepository(User);
-  
+
       let { page, skip } = req.query;
-  
+
       let currentPage = page ? +page : 1;
       let itemsPerPage = skip ? +skip : 10;
-  
+
       // Filtrar usuarios con role igual a "student"
       const [allUsers, count] = await UserRepository.findAndCount({
         where: {
           role: {
-            role_name: "student"
-          }
+            role_name: "student",
+          },
         },
         skip: (currentPage - 1) * itemsPerPage,
         take: itemsPerPage,
@@ -242,9 +244,9 @@ export class UserController {
           name: true,
           email: true,
         },
-        relations: ['role'] // Para incluir la relación con el rol
+        relations: ["role"], // Para incluir la relación con el rol
       });
-  
+
       res.status(200).json({
         count,
         skip: itemsPerPage,
@@ -257,8 +259,6 @@ export class UserController {
       });
     }
   }
-  
-  
 
   async deleteUser(req: Request, res: Response): Promise<void | Response<any>> {
     try {

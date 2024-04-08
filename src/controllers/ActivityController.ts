@@ -44,33 +44,6 @@ export class ActivityController {
     }
   }
 
-  async getBySubject(
-    req: Request,
-    res: Response
-  ): Promise<void | Response<any>> {
-    try {
-      const subjectId = +req.params.id;
-      const activityRepository = AppDataSource.getRepository(Activity);
-
-      const activities = await activityRepository.find({
-        where: { subject_id: subjectId },
-      });
-
-      if (!activities || activities.length === 0) {
-        return res.status(404).json({
-          message: "No se encontraron actividades para esta asignatura",
-        });
-      }
-
-      res.status(200).json(activities);
-    } catch (error) {
-      console.error("Error al buscar actividades de la asignatura:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener actividades de la asignatura" });
-    }
-  }
-
   async createActivity(
     req: Request<{}, {}, CreateActivitiesRequestBody>,
     res: Response
