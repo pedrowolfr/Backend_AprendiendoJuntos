@@ -218,32 +218,37 @@ export class UserController {
     }
   }
 
-  async getAllStudents(req: Request, res: Response): Promise<void | Response<any>> {
+  async getAllStudents(
+    req: Request,
+    res: Response
+  ): Promise<void | Response<any>> {
     try {
       const { page, skip } = req.query;
       const currentPage = page ? +page : 1;
       const itemsPerPage = skip ? +skip : 10;
-  
+
       const enrollmentRepository = AppDataSource.getRepository(Enrollment);
-  
-      const teacherId = Number(req.tokenData?.userId); 
+
+      const teacherId = Number(req.tokenData?.userId);
       if (teacherId === undefined) {
-        return res.status(401).json({ message: 'Token de autenticación no válido' });
+        return res
+          .status(401)
+          .json({ message: "Token de autenticación no válido" });
       }
-  
+
       const enrollments = await enrollmentRepository.find({
-        relations: ['user', 'subject'],
+        relations: ["user", "subject"],
         where: { subject: { teacher_id: teacherId } },
         skip: (currentPage - 1) * itemsPerPage,
         take: itemsPerPage,
       });
-  
-      const students = enrollments.map(enrollment => ({
+
+      const students = enrollments.map((enrollment) => ({
         id: enrollment.user.id,
         name: enrollment.user.name,
         subject_name: enrollment.subject.subject_name,
       }));
-  
+
       res.status(200).json({
         count: students.length,
         skip: itemsPerPage,
@@ -252,10 +257,12 @@ export class UserController {
       });
     } catch (error) {
       console.error("Error al obtener estudiantes matriculados:", error);
-      res.status(500).json({ message: "Error al obtener estudiantes matriculados" });
+      res
+        .status(500)
+        .json({ message: "Error al obtener estudiantes matriculados" });
     }
   }
-  
+
   async deleteUser(req: Request, res: Response): Promise<void | Response<any>> {
     try {
       const id = +req.params.id;
