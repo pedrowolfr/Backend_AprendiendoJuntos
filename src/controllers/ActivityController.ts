@@ -19,18 +19,18 @@ export class ActivityController {
       });
 
       const enrollmentsWithDetails = myEnrollments.map((enrollment) => {
-        const subject = enrollment.subject || {};
-        const activities = subject.activities || [];
+        const subject = enrollment.subject;
+        const activities = subject.activities;
 
         return {
           subject: {
-            id: subject.id || null,
-            name: subject.subject_name || null,
+            id: subject.id,
+            name: subject.subject_name,
           },
           activities: activities.map((activity) => ({
-            id: activity.id || null,
-            activity_name: activity.activity_name || null,
-            content: activity.content || null,
+            id: activity.id,
+            activity_name: activity.activity_name,
+            content: activity.content,
           })),
         };
       });
